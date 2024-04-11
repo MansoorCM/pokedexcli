@@ -4,9 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+
+	"github.com/MansoorCM/pokedexcli/internal/pokeapi"
 )
 
-func startRepl() {
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsUrl *string
+	prevLocationsUrl *string
+}
+
+func startRepl(config *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	commands := getCommands()
 	for {
@@ -19,7 +27,7 @@ func startRepl() {
 		if !ok {
 			fmt.Println("Enter valid command")
 		} else {
-			command.callback()
+			command.callback(config)
 		}
 	}
 
@@ -31,7 +39,7 @@ func startRepl() {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -45,6 +53,16 @@ func getCommands() map[string]cliCommand {
 			name:        "exit",
 			description: "Exit the Pokedex",
 			callback:    commandExit,
+		},
+		"map": {
+			name:        "map",
+			description: "Get the next 20 pokemon locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Get the previous 20 pokemon locations",
+			callback:    commandMapb,
 		},
 	}
 }
