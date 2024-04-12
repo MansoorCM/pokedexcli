@@ -27,7 +27,10 @@ func startRepl(config *config) {
 		if !ok {
 			fmt.Println("Enter valid command")
 		} else {
-			command.callback(config)
+			err := command.callback(config)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 

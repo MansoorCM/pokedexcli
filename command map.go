@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func commandMap(cfg *config) error {
+
 	locationsresp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsUrl)
 	if err != nil {
 		return err
