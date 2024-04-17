@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/MansoorCM/pokedexcli/internal/pokeapi"
 )
@@ -22,12 +23,17 @@ func startRepl(config *config) {
 		if !scanner.Scan() {
 			break
 		}
-		input := scanner.Text()
-		command, ok := commands[input]
+		input := strings.Split(scanner.Text(), " ")
+		arg1 := input[0]
+		arg2 := ""
+		if len(input) > 1 {
+			arg2 = input[1]
+		}
+		command, ok := commands[arg1]
 		if !ok {
 			fmt.Println("Enter valid command")
 		} else {
-			err := command.callback(config)
+			err := command.callback(config, &arg2)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -42,7 +48,7 @@ func startRepl(config *config) {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, *string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -66,6 +72,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Get the previous 20 pokemon locations",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Get the names of pokemons in the region",
+			callback:    commandExplore,
 		},
 	}
 }
