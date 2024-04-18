@@ -6,7 +6,7 @@ import (
 )
 
 func commandExplore(cfg *config, name *string) error {
-	if name == nil {
+	if name == nil || *name == "" {
 		return errors.New("enter location name to explore")
 	}
 	exploreResp, err := cfg.pokeapiClient.ListPokemons(*name)
